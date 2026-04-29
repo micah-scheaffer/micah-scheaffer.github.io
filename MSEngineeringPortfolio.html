@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micah Scheaffer — Engineering Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080A0C;
+    --surface: #0F1216;
+    --surface2: #161B22;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #E8EDF2;
+    --muted: #6B7885;
+    --accent: #E8521A;
+    --accent2: #3B82F6;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 60px;
+    background: rgba(8,10,12,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 span {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.75rem;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+  }
+
+  .btn-primary:hover { background: #c44414; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border-bright);
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--text); }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* SECTION LAYOUT */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .section-count {
+    font-family: var(--mono);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--surface2);
+    line-height: 1;
+  }
+
+  /* PROJECT GRID */
+  .project-grid {
+    display: grid;
+    gap: 1.5px;
+  }
+
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* PROJECT CARD */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 260px;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover { background: var(--surface2); border-color: var(--border-bright); }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  /* FEATURED CARD */
+  .project-card.featured {
+    grid-column: span 2;
+    min-height: 200px;
+    flex-direction: row;
+    gap: 3rem;
+    align-items: flex-start;
+  }
+
+  .project-card.featured .card-body { flex: 1; }
+
+  .project-card.featured .card-meta { width: 200px; flex-shrink: 0; }
+
+  .card-index {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .tag.accent { border-color: rgba(232,82,26,0.4); color: var(--accent); background: rgba(232,82,26,0.05); }
+  .tag.blue { border-color: rgba(59,130,246,0.4); color: #60A5FA; background: rgba(59,130,246,0.05); }
+
+  .card-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 2px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .card-link:hover { color: var(--text); border-color: var(--border-bright); }
+
+  .card-link svg { width: 10px; height: 10px; }
+
+  /* IMAGE PLACEHOLDER */
+  .img-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .img-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* SPAN VARIANTS */
+  .span-full { grid-column: 1 / -1; }
+  .span-2 { grid-column: span 2; }
+
+  /* ACHIEVEMENT BANNER */
+  .achievement {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,82,26,0.08);
+    border: 1px solid rgba(232,82,26,0.25);
+    border-radius: 2px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .achievement-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* SEPARATOR LINE */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* SPEC ROW */
+  .specs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spec-key { color: var(--muted); }
+  .spec-val { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero h1 { font-size: 3rem; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .project-card.featured { flex-direction: column; }
+    .project-card.featured .card-meta { width: 100%; }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    .nav-links { display: none; }
+    .span-2 { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">MH // ENG</a>
+  <ul class="nav-links">
+    <li><a href="#vex">VEX Robotics</a></li>
+    <li><a href="#cps">CPS Projects</a></li>
+    <li><a href="#other">Hardware</a></li>
+    <li><a href="mailto:micah.scheaffer@gmail.com">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" style="padding-top: 60px;">
+  <div class="hero-label">Engineering Portfolio</div>
+  <h1>
+    Micah Scheaffer
+    <span>ME + CPS @ Iowa State.</span>
+  </h1>
+  <p class="hero-desc">
+    Mechanical &amp; Cyber-Physical Systems engineer building autonomous systems, robots, and hardware · Founder of ISU's VEX U Cyber Robotics Club · Interned in Engineering Design at Caterpillar · Incoming Automation and Controls at Molex
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">#1</span>
+      <span class="stat-label">VEX World Champion</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">#1</span>
+      <span class="stat-label">US Open Skills Champion</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">10</span>
+      <span class="stat-label">Years of Competitive Robotics</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">20+</span>
+      <span class="stat-label">Member Club Founded</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2×</span>
+      <span class="stat-label">Drones Built</span>
+    </div>
+  </div>
+  <div class="hero-cta">
+    <a href="#vex" class="btn btn-primary">View Projects</a>
+    <a href="Docs/Micah_Scheaffer_Resume_Spring26.pdf" class="btn btn-ghost">Resume PDF</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!--  VEX ROBOTICS                      -->
+<!-- ══════════════════════════════════ -->
+<section id="vex">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">01 — Competition Robotics</div>
+      <h2 class="section-title">VEX Robotics</h2>
+    </div>
+  </div>
+
+  <div class="project-grid grid-2">
+
+    <!-- WORLDS BOT — FEATURED -->
+    <div class="project-card featured">
+      <div class="card-body">
+        <div style="display:flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0;">
+          <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>VEX World Champion</div>
+          <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>US Open Robotics Skills Champion</div>
+        </div>
+        <div class="card-index">01 — 7686B</div>
+        <h3 class="card-title">7686B VEX Competition Robot</h3>
+        <p class="card-desc">
+          Competition robot designed and driven to national and world titles in 2023.
+        </p>
+        <div class="card-links">
+          <a href="#" class="card-link" style="display:none">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div class="card-meta" style="display:flex; flex-direction:row; gap:0.75rem; width:380px; align-items:stretch;">
+        <video src="images_and_vids/7686B_skills.mp4" autoplay loop muted playsinline style="flex:3; min-width:0; border-radius:2px; border:1px solid var(--border); object-fit:cover;"></video>
+        <img src="images_and_vids/7686B_worlds_bot.jpg" alt="7686B Worlds Competition Robot" style="flex:1; min-width:0; object-fit:contain; background:var(--surface2); border-radius:2px; border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <!-- FULLY CUSTOM BOT -->
+    <!-- VEX U CYBER ROBOTICS CLUB -->
+    <div class="project-card">
+      <div class="card-index">02 — Club / Org</div>
+      <h3 class="card-title">VEX U Cyber<br>Robotics Club</h3>
+      <img src="images_and_vids/VEXU_comp.jpg" alt="VEX U Cyber Robotics Club competition" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Founded University robotics club, and grew it to over 20 members. Pictured above is half the team attending a competition.</p>
+    </div>
+
+    <div class="project-card">
+      <div class="card-index">03 — Custom Design</div>
+      <h3 class="card-title">Fully Custom<br>VEX U Robot</h3>
+      <img src="images_and_vids/CYBER_custom_bot.JPG" alt="Fully Custom VEX U Robot" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Started University level VEX Robotics Club. Ground-up custom robot design. Every structural element designed in CAD and waterjet-cut or 3D printed.</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════ -->
+<!--  CPS PROJECTS                      -->
+<!-- ══════════════════════════════════ -->
+<section id="cps">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">02 — Academic Engineering</div>
+      <h2 class="section-title">CPS Projects</h2>
+    </div>
+  </div>
+
+  <div class="project-grid grid-3">
+
+    <!-- HVAC CONTROL -->
+    <div class="project-card">
+      <div class="card-index">01 — Control Systems</div>
+      <h3 class="card-title">Model Smarthome<br>HVAC System</h3>
+      <img src="images_and_vids/HVAC_controls.png" alt="Model Smarthome HVAC System" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Multi-MCU smarthome HVAC testbed with real sensors, servos, and a thermal unit. Built the full software stack: automated control algorithm, user-facing interface, and network communications across devices.</p>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-key">Platform</span><span class="spec-val">Multi-MCU + Node-RED</span></div>
+        <div class="spec-row"><span class="spec-key">Interface</span><span class="spec-val">Custom UI + Network Comms</span></div>
+      </div>
+      <div class="card-tags" style="margin-top: 0.75rem;">
+        <span class="tag blue">Cyber-Physical Systems</span>
+        <span class="tag">Node-RED</span>
+        <span class="tag">PID Control</span>
+        <span class="tag">Embedded</span>
+      </div>
+      <div class="card-links">
+        <a href="Docs/CPRE 2870X Final Project.pdf" class="card-link">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 0h5.293A1 1 0 0110 .293L13.707 4a1 1 0 01.293.707V14a2 2 0 01-2 2H4a2 2 0 01-2-2V2a2 2 0 012-2zm5.5 1.5v2a1 1 0 001 1h2L9.5 1.5z"/></svg>
+          Report
+        </a>
+      </div>
+    </div>
+
+    <!-- SELF-DRIVING SIM -->
+    <div class="project-card">
+      <div class="card-index">02 — Autonomy &amp; ROS</div>
+      <h3 class="card-title">Self-Driving Car<br>ROS Simulation</h3>
+      <video src="images_and_vids/simulated_car.mp4" autoplay loop muted playsinline style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);"></video>
+      <p class="card-desc">Autonomous vehicle simulation built on ROS 2. Implemented lane following, obstacle avoidance, and path planning. Full sensor integration pipeline with lidar and camera inputs.</p>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-key">Framework</span><span class="spec-val">ROS 2</span></div>
+        <div class="spec-row"><span class="spec-key">Sensors</span><span class="spec-val">Lidar + Camera</span></div>
+      </div>
+      <div class="card-tags" style="margin-top: 0.75rem;">
+        <span class="tag accent">ROS 2</span>
+        <span class="tag">Python</span>
+        <span class="tag">Path Planning</span>
+        <span class="tag">Simulation</span>
+      </div>
+      <div class="card-links">
+        <a href="Docs/ME2800 Final Project.pdf" class="card-link">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 0h5.293A1 1 0 0110 .293L13.707 4a1 1 0 01.293.707V14a2 2 0 01-2 2H4a2 2 0 01-2-2V2a2 2 0 012-2zm5.5 1.5v2a1 1 0 001 1h2L9.5 1.5z"/></svg>
+          Report
+        </a>
+      </div>
+    </div>
+
+    <!-- MATLAB GUI -->
+    <div class="project-card">
+      <div class="card-index">03 — MATLAB / Robotics</div>
+      <h3 class="card-title">Robot Animation<br>MATLAB App GUI</h3>
+      <img src="images_and_vids/robot_arm_matlab_app.png" alt="Robot Animation MATLAB App GUI" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Interactive MATLAB App Designer GUI for 3-DOF robot arm kinematics and animation. Built with Peter Corke's Robotics Toolbox using Modified DH parameters. Real-time joint angle control and workspace visualization.</p>
+      <div class="specs">
+        <div class="spec-row"><span class="spec-key">DOF</span><span class="spec-val">3-DOF Arm</span></div>
+        <div class="spec-row"><span class="spec-key">Kinematics</span><span class="spec-val">Modified DH</span></div>
+      </div>
+      <div class="card-tags" style="margin-top: 0.75rem;">
+        <span class="tag">MATLAB</span>
+        <span class="tag">Forward Kinematics</span>
+        <span class="tag">GUI</span>
+        <span class="tag">Robotics Toolbox</span>
+      </div>
+      <div class="card-links">
+        <a href="Docs/Matlabapp.m" download class="card-link">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg>
+          Matlabapp.m
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════ -->
+<!--  OTHER HARDWARE                    -->
+<!-- ══════════════════════════════════ -->
+<section id="other">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">03 — Hardware Projects</div>
+      <h2 class="section-title">Built Hardware</h2>
+    </div>
+  </div>
+
+  <div class="project-grid grid-2">
+
+    <!-- 8" DRONE — FEATURED -->
+    <div class="project-card featured">
+      <div class="card-body">
+        <div class="achievement"><span class="achievement-dot"></span>Autonomous System</div>
+        <div class="card-index">01 — Flagship Build</div>
+        <h3 class="card-title">8" Autonomous<br>Photogrammetry Drone</h3>
+        <p class="card-desc">
+          Full-stack autonomous drone built for indoor 3D scanning. Custom 6S2P battery pack, Jetson Orin Nano compute, PX4 on MicoAir H743, stereo VSLAM cameras, and RPLidar. Post-flight pipeline produces high-fidelity 3D Gaussian Splatting reconstructions.
+        </p>
+        <div class="card-tags" style="margin-bottom: 1rem;">
+<span class="tag">PX4 + ROS 2</span>
+          <span class="tag">VSLAM</span>
+          <span class="tag">3D Gaussian Splat</span>
+          <span class="tag">Jetson Orin</span>
+          <span class="tag">6S LiPo</span>
+        </div>
+      </div>
+      <div class="card-meta">
+        <img src="images_and_vids/8in_drone.jpg" alt="8 inch Autonomous Photogrammetry Drone" style="width:100%; height:100%; min-height:220px; aspect-ratio:3/4; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <!-- 3.5" DRONE -->
+    <div class="project-card">
+      <div class="card-index">02 — Prototype Platform</div>
+      <h3 class="card-title">3.5" Racing<br>/ Dev Drone</h3>
+      <img src="images_and_vids/3.5in_drone.jpg" alt="3.5 inch Racing Dev Drone" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Compact 3.5" drone built as a development and testing platform. Used for flight control algorithm validation and sensor integration testing before scaling to the 8" platform.</p>
+      <div class="card-tags" style="margin-top: 0.75rem;">
+        <span class="tag">Betaflight</span>
+        <span class="tag">Brushless Motors</span>
+        <span class="tag">ESC Config</span>
+        <span class="tag">FPV</span>
+      </div>
+    </div>
+
+    <!-- TRASH COMPACTOR -->
+    <div class="project-card">
+      <div class="card-index">03 — Mechanical Design</div>
+      <h3 class="card-title">Weld<br>Training</h3>
+      <img src="images_and_vids/weld_training.jpg" alt="Weld Training" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);">
+      <p class="card-desc">Mechanical trash compactor designed and built from scratch. Focused on linkage mechanism design, force multiplication through mechanical advantage, and durable fabrication for real-world use.</p>
+      <div class="card-tags">
+        <span class="tag">Mechanism Design</span>
+        <span class="tag">CAD</span>
+        <span class="tag">Fabrication</span>
+        <span class="tag">Linkage Analysis</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-top: 1px solid var(--border);">
+  <div class="section-header" style="margin-bottom: 2rem;">
+    <div>
+      <div class="section-tag">04 — Contact</div>
+      <h2 class="section-title">Get In Touch</h2>
+    </div>
+  </div>
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <a href="mailto:micah.scheaffer@gmail.com" class="btn btn-primary" style="display:flex; align-items:center; gap:0.5rem;">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M0 4a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H2a2 2 0 01-2-2V4zm2-1a1 1 0 00-1 1v.217l7 4.2 7-4.2V4a1 1 0 00-1-1H2zm13 2.383l-4.758 2.855L15 11.114V5.383zm-.034 6.876l-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 002 13h12a1 1 0 00.966-.741zM1 11.114l4.758-2.876L1 5.383v5.731z"/></svg>
+      micah.scheaffer@gmail.com
+    </a>
+    <a href="tel:+16052149182" class="btn btn-ghost" style="display:flex; align-items:center; gap:0.5rem;">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.654 1.328a.678.678 0 00-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 004.168 6.608 17.569 17.569 0 006.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 00-.063-1.015l-2.307-1.794a.678.678 0 00-.58-.122l-2.19.547a1.745 1.745 0 01-1.657-.459L5.482 8.062a1.745 1.745 0 01-.46-1.657l.548-2.19a.678.678 0 00-.122-.58L3.654 1.328z"/></svg>
+      +1 (605) 214-9182
+    </a>
+    <a href="https://www.linkedin.com/in/micahsch/" target="_blank" class="btn btn-ghost" style="display:flex; align-items:center; gap:0.5rem;">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 01.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+      linkedin.com/in/micahsch
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Micah Scheaffer — Engineering Portfolio — 2026</p>
+  <p>Iowa State University · ME + CPS</p>
+</footer>
+
+</body>
+</html>
