@@ -513,7 +513,6 @@
     background: transparent;
     border: none;
     overflow: visible;
-    z-index: 1;
   }
 
   #card-7686b::before { display: none; }
@@ -553,37 +552,32 @@
   .card-7686b-inner.is-expanding {
     position: absolute;
     z-index: 50;
-    flex-direction: row;
-    align-items: flex-start;
     background: var(--surface2);
     border-color: var(--border-bright);
   }
 
   .card-7686b-inner.is-expanding::before { transform: scaleX(1); }
 
+  /* main content never changes layout — width locked by JS */
   .card-7686b-main {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     flex-shrink: 0;
-    width: 100%;
-    transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
-  .card-7686b-inner.is-expanding .card-7686b-main {
-    width: 30%;
-    min-width: 0;
-  }
-
+  /* photos panel: absolutely positioned in right portion of expanded inner, hidden by default */
   .card-7686b-photos {
-    flex: 1;
-    display: grid;
+    display: none;
+    position: absolute;
+    top: 2rem;
+    bottom: 2rem;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
     align-content: start;
     opacity: 0;
     transition: opacity 0.25s ease;
-    min-width: 0;
+    overflow: hidden;
   }
 
   .extra-photo {
@@ -922,9 +916,10 @@
 
 <script>
 (function () {
-  const card = document.getElementById('card-7686b');
-  const grid = document.getElementById('vex-grid');
+  const card  = document.getElementById('card-7686b');
+  const grid  = document.getElementById('vex-grid');
   const inner = card.querySelector('.card-7686b-inner');
+  const main  = card.querySelector('.card-7686b-main');
   const photos = card.querySelector('.card-7686b-photos');
   let revealTimer, collapseTimer;
 
@@ -932,46 +927,50 @@
     clearTimeout(revealTimer);
     clearTimeout(collapseTimer);
 
-    // Measure current position before any changes
-    const cardRect = card.getBoundingClientRect();
-    const gridRect = grid.getBoundingClientRect();
     const cardW = card.offsetWidth;
     const cardH = card.offsetHeight;
+    const cardRect = card.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const gridW = grid.offsetWidth;
 
-    // Lock card size so the grid doesn't collapse
-    card.style.width = cardW + 'px';
+    // Lock the card's space in the grid so nothing shifts
+    card.style.width  = cardW + 'px';
     card.style.height = cardH + 'px';
 
-    // Place inner exactly over the card, then expand
-    inner.style.top = (cardRect.top - gridRect.top) + 'px';
-    inner.style.left = (cardRect.left - gridRect.left) + 'px';
-    inner.style.width = cardW + 'px';
+    // Fix main content width so text never reflows
+    main.style.width = (cardW - 64) + 'px';  // subtract 2×2rem padding
+
+    // Position photos panel to the right of the main column
+    photos.style.left   = cardW + 'px';
+    photos.style.right  = '2rem';
+    photos.style.display = 'grid';
+
+    // Anchor inner div over the card, then animate outward
+    inner.style.top       = (cardRect.top - gridRect.top) + 'px';
+    inner.style.left      = (cardRect.left - gridRect.left) + 'px';
+    inner.style.width     = cardW + 'px';
     inner.style.minHeight = cardH + 'px';
     inner.classList.add('is-expanding');
 
-    // Force reflow so transition starts from current size
-    inner.getBoundingClientRect();
+    inner.getBoundingClientRect(); // force reflow
 
-    inner.style.width = grid.offsetWidth + 'px';
-    revealTimer = setTimeout(() => { photos.style.opacity = '1'; }, 320);
+    inner.style.width = gridW + 'px';
+    revealTimer = setTimeout(() => { photos.style.opacity = '1'; }, 370);
   });
 
   card.addEventListener('mouseleave', () => {
     clearTimeout(revealTimer);
     photos.style.opacity = '0';
-
-    // Animate back to card size
     inner.style.width = card.offsetWidth + 'px';
 
     collapseTimer = setTimeout(() => {
       inner.classList.remove('is-expanding');
-      inner.style.top = '';
-      inner.style.left = '';
-      inner.style.width = '';
-      inner.style.minHeight = '';
-      card.style.width = '';
-      card.style.height = '';
-    }, 450);
+      inner.style.top = inner.style.left = inner.style.width = inner.style.minHeight = '';
+      main.style.width = '';
+      photos.style.display = 'none';
+      photos.style.left = photos.style.right = '';
+      card.style.width = card.style.height = '';
+    }, 460);
   });
 })();
 </script>
