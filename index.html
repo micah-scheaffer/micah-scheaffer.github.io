@@ -519,10 +519,7 @@
   #card-7686b::before { display: none; }
 
   .card-7686b-inner {
-    position: absolute;
-    top: 0; left: 0;
     width: 100%;
-    min-height: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
     padding: 2rem;
@@ -531,8 +528,8 @@
     gap: 1rem;
     transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.2s, border-color 0.2s;
     overflow: hidden;
-    z-index: 2;
     box-sizing: border-box;
+    position: relative;
   }
 
   .card-7686b-inner::before {
@@ -546,14 +543,23 @@
     transition: transform 0.3s;
   }
 
-  #card-7686b:hover .card-7686b-inner {
+  #card-7686b:hover .card-7686b-inner:not(.is-expanding) {
     background: var(--surface2);
     border-color: var(--border-bright);
-    flex-direction: row;
-    align-items: flex-start;
   }
 
-  #card-7686b:hover .card-7686b-inner::before { transform: scaleX(1); }
+  #card-7686b:hover .card-7686b-inner:not(.is-expanding)::before { transform: scaleX(1); }
+
+  .card-7686b-inner.is-expanding {
+    position: absolute;
+    z-index: 50;
+    flex-direction: row;
+    align-items: flex-start;
+    background: var(--surface2);
+    border-color: var(--border-bright);
+  }
+
+  .card-7686b-inner.is-expanding::before { transform: scaleX(1); }
 
   .card-7686b-main {
     display: flex;
@@ -561,9 +567,10 @@
     gap: 1rem;
     flex-shrink: 0;
     width: 100%;
+    transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
-  #card-7686b:hover .card-7686b-main {
+  .card-7686b-inner.is-expanding .card-7686b-main {
     width: 30%;
     min-width: 0;
   }
@@ -742,7 +749,7 @@
     <div class="project-card">
       <h3 class="card-title">Self-Driving Car<br>ROS Simulation</h3>
       <video src="images_and_vids/simulated_car.mp4" autoplay loop muted playsinline style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);"></video>
-      <p class="card-desc">Autonomous vehicle simulation built on ROS 2. Implemented lane following, obstacle avoidance, adavptive speed controller. Sensor drive autonomy using simulated noisy lidar inputs.</p>
+      <p class="card-desc">Autonomous vehicle simulation built on ROS 2. Implemented lane following, obstacle avoidance, adavptive speed controller. Sensor driven autonomy using simulated noisy lidar inputs.</p>
       <div class="card-tags" style="margin-top: 0.75rem;">
         <span class="tag">ROS 2</span>
         <span class="tag">Python</span>
@@ -919,10 +926,32 @@
   const grid = document.getElementById('vex-grid');
   const inner = card.querySelector('.card-7686b-inner');
   const photos = card.querySelector('.card-7686b-photos');
-  let revealTimer;
+  let revealTimer, collapseTimer;
 
   card.addEventListener('mouseenter', () => {
     clearTimeout(revealTimer);
+    clearTimeout(collapseTimer);
+
+    // Measure current position before any changes
+    const cardRect = card.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const cardW = card.offsetWidth;
+    const cardH = card.offsetHeight;
+
+    // Lock card size so the grid doesn't collapse
+    card.style.width = cardW + 'px';
+    card.style.height = cardH + 'px';
+
+    // Place inner exactly over the card, then expand
+    inner.style.top = (cardRect.top - gridRect.top) + 'px';
+    inner.style.left = (cardRect.left - gridRect.left) + 'px';
+    inner.style.width = cardW + 'px';
+    inner.style.minHeight = cardH + 'px';
+    inner.classList.add('is-expanding');
+
+    // Force reflow so transition starts from current size
+    inner.getBoundingClientRect();
+
     inner.style.width = grid.offsetWidth + 'px';
     revealTimer = setTimeout(() => { photos.style.opacity = '1'; }, 320);
   });
@@ -930,7 +959,19 @@
   card.addEventListener('mouseleave', () => {
     clearTimeout(revealTimer);
     photos.style.opacity = '0';
-    inner.style.width = '';
+
+    // Animate back to card size
+    inner.style.width = card.offsetWidth + 'px';
+
+    collapseTimer = setTimeout(() => {
+      inner.classList.remove('is-expanding');
+      inner.style.top = '';
+      inner.style.left = '';
+      inner.style.width = '';
+      inner.style.minHeight = '';
+      card.style.width = '';
+      card.style.height = '';
+    }, 450);
   });
 })();
 </script>
