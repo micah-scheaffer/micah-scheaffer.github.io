@@ -505,6 +505,95 @@
     text-transform: uppercase;
   }
 
+  /* 7686B CARD EXPANSION */
+  #vex-grid { position: relative; }
+
+  #card-7686b {
+    padding: 0;
+    background: transparent;
+    border: none;
+    overflow: visible;
+    z-index: 1;
+  }
+
+  #card-7686b::before { display: none; }
+
+  .card-7686b-inner {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    min-height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.2s, border-color 0.2s;
+    overflow: hidden;
+    z-index: 2;
+    box-sizing: border-box;
+  }
+
+  .card-7686b-inner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  #card-7686b:hover .card-7686b-inner {
+    background: var(--surface2);
+    border-color: var(--border-bright);
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  #card-7686b:hover .card-7686b-inner::before { transform: scaleX(1); }
+
+  .card-7686b-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  #card-7686b:hover .card-7686b-main {
+    width: 30%;
+    min-width: 0;
+  }
+
+  .card-7686b-photos {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    align-content: start;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    min-width: 0;
+  }
+
+  .extra-photo {
+    aspect-ratio: 4/3;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .extra-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     nav { padding: 0 1.5rem; }
@@ -539,7 +628,7 @@
   <div class="hero-label">Engineering Portfolio</div>
   <h1>
     Micah Scheaffer
-    <span>Mechanical Engineering + Cyber-Physical Systems</span>
+    <span>Mechanical Engineering +<br>Cyber-Physical Systems</span>
   </h1>
   <p class="hero-desc">
     Building autonomous systems, robots, and hardware · Founder of ISU's VEX U Cyber Robotics Club · Interned in Engineering Design at Caterpillar · Incoming Automation and Controls at Molex
@@ -578,21 +667,31 @@
     </div>
   </div>
 
-  <div class="project-grid grid-3">
+  <div class="project-grid grid-3" id="vex-grid">
 
     <!-- WORLDS BOT -->
-    <div class="project-card">
-      <h3 class="card-title">7686B VEX Competition Robot</h3>
-      <video src="images_and_vids/7686B_skills.mp4" autoplay loop muted playsinline style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);"></video>
-      <p class="card-desc">Led my vex robotics team as captian since middle school, with increasing levels of success through the final season culminating in national and world titles in 2023. Designed dozens of competition robots with many iterations per season for various task oreinted objectives.</p>
-      <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
-        <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>VEX World Champion</div>
-        <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>US Open Robotics Skills Champion</div>
-      </div>
-      <div class="card-tags" style="margin-top: 0.75rem;">
-        <span class="tag">Team Leadership</span>
-        <span class="tag">Robot Design</span>
-        <span class="tag">Competition Strategy</span>
+    <div class="project-card" id="card-7686b">
+      <div class="card-7686b-inner">
+        <div class="card-7686b-main">
+          <h3 class="card-title">7686B VEX Competition Robot</h3>
+          <video src="images_and_vids/7686B_skills.mp4" autoplay loop muted playsinline style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:2px; border:1px solid var(--border);"></video>
+          <p class="card-desc">Led my vex robotics team as captian since middle school, with increasing levels of success through the final season culminating in national and world titles in 2023. Designed dozens of competition robots with many iterations per season for various task oreinted objectives.</p>
+          <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
+            <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>VEX World Champion</div>
+            <div class="achievement" style="margin-bottom:0"><span class="achievement-dot"></span>US Open Robotics Skills Champion</div>
+          </div>
+          <div class="card-tags" style="margin-top: 0.75rem;">
+            <span class="tag">Team Leadership</span>
+            <span class="tag">Robot Design</span>
+            <span class="tag">Competition Strategy</span>
+          </div>
+        </div>
+        <div class="card-7686b-photos">
+          <div class="extra-photo"><img src="images_and_vids/7686B_worlds_bot.jpg" alt="7686B Worlds Robot"></div>
+          <div class="extra-photo"><img src="images_and_vids/world_champs.jpg" alt="World Champions"></div>
+          <div class="extra-photo" style="display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;">+ ADD PHOTO</span></div>
+          <div class="extra-photo" style="display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;">+ ADD PHOTO</span></div>
+        </div>
       </div>
     </div>
 
@@ -813,6 +912,28 @@
   <p>Micah Scheaffer · Engineering Portfolio · 2026</p>
   <p>Iowa State University · ME + CPS</p>
 </footer>
+
+<script>
+(function () {
+  const card = document.getElementById('card-7686b');
+  const grid = document.getElementById('vex-grid');
+  const inner = card.querySelector('.card-7686b-inner');
+  const photos = card.querySelector('.card-7686b-photos');
+  let revealTimer;
+
+  card.addEventListener('mouseenter', () => {
+    clearTimeout(revealTimer);
+    inner.style.width = grid.offsetWidth + 'px';
+    revealTimer = setTimeout(() => { photos.style.opacity = '1'; }, 320);
+  });
+
+  card.addEventListener('mouseleave', () => {
+    clearTimeout(revealTimer);
+    photos.style.opacity = '0';
+    inner.style.width = '';
+  });
+})();
+</script>
 
 </body>
 </html>
